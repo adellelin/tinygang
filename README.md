@@ -6,13 +6,13 @@ All things related to tiny gang activites. TinyGang is an open source wearable p
 Hardware:
 Base Setup:
 
-Teensy 3.2
-XBee 900 Pro
-WS2801 LED Chain - https://www.adafruit.com/product/738
+- Teensy 3.2
+- XBee 900 Pro
+- WS2801 LED Chain - https://www.adafruit.com/product/738
 
 Sensors (optional):
 
-Teensy Prop Shield with motion sensor
+- Teensy Prop Shield with motion sensor
 
 ## steggos
 
