@@ -11,7 +11,7 @@ Base Setup:
 - WS2801 LED Chain x 2 - https://www.adafruit.com/product/738
 - Teensy 3.1 XBee Adapter - https://www.sparkfun.com/products/13311
 - 4 Pin JST Connectors - https://www.sparkfun.com/products/14576
-- USB Battery (Any 5v)
+- USB Battery (5v with higher amp) - eg: https://www.amazon.com/Anker-PowerCore-Ultra-Compact-High-Speed-Technology/dp/B01CU1EC6Y/
 
 Sensors (optional):
 
