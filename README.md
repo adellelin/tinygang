@@ -24,6 +24,19 @@ Jacket Integration:
 
 ## steggos
 
+some hackaday article about laser cut led diffusion :
+http://imakethin.gs/blog/glowy-dinosaur-hoody
+
+@metal and some 3d printing later..
+https://www.thingiverse.com/thing:30800
+and remixes ensued: https://www.thingiverse.com/thing:293796
+https://www.thingiverse.com/thing:3327694
+
+
+![alt text](https://raw.githubusercontent.com/adellelin/tinygang/master/img/steggo.png)
+[@mpinner climbing the led wall from @mbientlab 
+Steggo led hoodies are born and joining the tinygang of led wearables together. #makerfaire #climbies](https://flic.kr/p/ekGJMU)
+
 
 ## other
 
