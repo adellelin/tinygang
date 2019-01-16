@@ -7,15 +7,16 @@ Hardware:
 Base Setup:
 
 - Teensy 3.2 - https://www.sparkfun.com/products/13736
-- XBee 900 Pro - https://www.sparkfun.com/products/11216
-- WS2801 LED Chain x 2 - https://www.adafruit.com/product/738
-- Teensy 3.1 XBee Adapter - https://www.sparkfun.com/products/13311
+- XBee 900 Pro - https://www.sparkfun.com/products/11216 ([configuration utility](https://www.digi.com/products/iot-platform/xctu))
+- WS2801 LED Chain x 2 - https://www.adafruit.com/product/738 
+  4-wire (power, ground, clock, data)
 - 4 Pin JST Connectors - https://www.sparkfun.com/products/14576
+- Teensy 3.1 XBee Adapter Board - https://www.sparkfun.com/products/13311
 - USB Battery (5v with higher amp) - eg: https://www.amazon.com/Anker-PowerCore-Ultra-Compact-High-Speed-Technology/dp/B01CU1EC6Y/
 
 Sensors (optional):
 
-- Teensy Prop Shield with motion sensor
+- Teensy Prop Shield with motion sensor ([calibrated](https://www.pjrc.com/store/prop_shield.html))
 
 Jacket Integration:
 
