@@ -41,7 +41,7 @@
 #define CLOCK_PIN_LEFT 3
 #endif
 
-#define MY_PATTERN_ID 4
+#define MY_PATTERN_ID 1
 
 Pattern* patterns[] = {
   new BookendFlip(), // pattern individually triggered
