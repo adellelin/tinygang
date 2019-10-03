@@ -17,6 +17,8 @@ public:
 
     return CHSV(255.0*normalizedHue, 225, 255.0*remaining);
 
+    // some basic examples of how to get started playing with these normalized float parameters
+    //
     //return CHSV(primaryHue, 225, (int)(255.0*remaining));
     //return CHSV(255.0*closeness, 225, 255.0*remaining);
     //return CHSV(255.0*position, 225, 255.0*remaining);
