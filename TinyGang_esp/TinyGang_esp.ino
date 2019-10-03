@@ -20,9 +20,9 @@
 #include "BookendTrace.h"
 #include "Twinkler.h"
 #include "BookendFlip.h"
+#include "BassShader.h"
+#include "BodyTwinkler.h"
 
-// How many leds in your strip?
-#define NUM_LEDS 64
 
 #define JACKET1_LEFT  1
 #define JACKET1_RIGHT 2
@@ -48,11 +48,11 @@
 #define CLOCK_PIN_LEFT 3
 #endif
 
-#define MY_PATTERN_ID 1
+#define MY_PATTERN_ID 0
 
 Pattern* patterns[] = {
-  new BookendFlip(), // pattern individually triggered
-  new WhiteTrace(), // pattern upon receive
+  new BodyTwinkler(), // pattern upon receive
+  new BassShader(), // pattern individually triggered
   new RainbowSparkle(),
   new BookendTrace(),
   new WhiteTrace(),
@@ -92,7 +92,7 @@ CRGB leds_right[NUM_LEDS];
 CRGB leds_left[NUM_LEDS];
 
 char patternCommand[] = {
-  'q', 'a', 'H',
+  'q', 'a', 'z',
   'w', 's', 'x',
   'e', 'd', 'c',
   'r', 'f', 'v'
@@ -159,7 +159,7 @@ void setup() {
   // LEDS.addLeds<WS2801, DATA_PIN_RIGHT, CLOCK_PIN_RIGHT, RGB>(leds_right, NUM_LEDS);
   LEDS.addLeds<CHIPSET, LED_PIN, COLOR_ORDER>(leds_right, NUM_LEDS).setCorrection( TypicalLEDStrip );
   //LEDS.addLeds<CHIPSET, LED_PIN, COLOR_ORDER>(leds_left, NUM_LEDS).setCorrection( TypicalLEDStrip );
-  LEDS.setBrightness(255);
+  LEDS.setBrightness(128);
   LEDS.setDither( 0 );
   FastLED.setDither( 0 );
 
@@ -241,7 +241,7 @@ void loop() {
         //led[i][j] = CHSV(100,100,100);
         led[i][j] = 0; // turn all LED to black once time hits
       } else {
-        float position = j / (float)NUM_LEDS;
+        float position = (float)j / (float)NUM_LEDS;
         float remaining = 1.0 - ellapseTimeMs[i] / durationMs;
         // set color to be the incoming message color
         int color = inboundHue;
