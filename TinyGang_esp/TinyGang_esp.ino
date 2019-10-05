@@ -4,14 +4,12 @@
    interaction and is to be expanded for multiple players
 */
 
-
 #include <FastLED.h>
-
 
 #define LED_PIN     12
 #define COLOR_ORDER GRB
 #define CHIPSET     WS2811
-#define NUM_LEDS    64
+#define NUM_LEDS    240
 
 #include <elapsedMillis.h>
 
@@ -48,20 +46,20 @@
 #define CLOCK_PIN_LEFT 3
 #endif
 
-#define MY_PATTERN_ID 0
+int myPatternId = 0;
 
 Pattern* patterns[] = {
-  new BodyTwinkler(), // pattern upon receive
+  new BodyTwinkler(), // red yellow sparkle short
   new BassShader(), // pattern individually triggered
-  new RainbowSparkle(),
-  new BookendTrace(),
+  new RainbowSparkle(), // more pale pink and blue
   new WhiteTrace(),
+  new BookendTrace(),
   new Twinkler()
 };
 
 int inboundHue = 229; // incoming char sets color
 
-int ledHue[] = { 0, 20, 255, 229, 200, 120};
+int ledHue[] = { 0, 20, 255, 120, 229, 200};
 // 120 was cyan
 // 229 pink
 // 22 orange
@@ -70,12 +68,12 @@ int ledHue[] = { 0, 20, 255, 229, 200, 120};
 
 elapsedMillis ellapseTimeMs[(sizeof(patterns)) / 4];
 
-float crazyDuration = 2000;
-float regularDuration = 3000;
+float crazyDuration = 5000;
+float regularDuration = 2000;
 float fastDuration = 2000;
-float durationMs = crazyDuration;
+float durationMs = regularDuration;
 
-float repeatDurationMs = 17000;
+float repeatDurationMs = 5000;
 float repeatCrazyMs = 3000;
 boolean sentAlready = false; // send message boolean
 
@@ -98,6 +96,11 @@ char patternCommand[] = {
   'r', 'f', 'v'
 };
 
+//****************
+// DIP SWITCHES
+
+int pins[] = {2, 15};
+
 //************************************************************
 // this is a simple example that uses the easyMesh library
 //
@@ -110,8 +113,8 @@ char patternCommand[] = {
 //************************************************************
 #include <painlessMesh.h>
 
-// some gpio pin that is connected to an LED...
-// on my rig, this is 5, change to the right number of your LED.
+             // some gpio pin that is connected to an LED...
+             // on my rig, this is 5, change to the right number of your LED.
 #define   LED             5       // GPIO number of connected LED, ON ESP-12 IS GPIO2
 
 #define   BLINK_PERIOD    3000 // milliseconds until cycle repeat
@@ -121,8 +124,8 @@ char patternCommand[] = {
 #define   MESH_PASSWORD   "somethingSneaky"
 #define   MESH_PORT       5555
 
-// Prototypes
-void sendMessage();
+             // Prototypes
+             void sendMessage();
 void receivedCallback(uint32_t from, String & msg);
 void newConnectionCallback(uint32_t nodeId);
 void changedConnectionCallback();
@@ -148,11 +151,10 @@ void setup() {
   Serial.begin(115200);
   Serial1.begin(9600);
 
-  // setup pins for JACKET1 vs JACKET2
-  pinMode(10, INPUT_PULLUP);
-  pinMode(11, OUTPUT);
-  digitalWrite(11, LOW);
-  pinMode(12, INPUT_PULLUP);
+  // setup dipswitch
+     for (int i = 0 ; i < 2; i++) {
+      pinMode(pins[i], INPUT_PULLUP);
+    }
 
   Serial.println("resetting");
   // LEDS.addLeds<WS2801, DATA_PIN_LEFT, CLOCK_PIN_LEFT, RGB>(leds_left, NUM_LEDS);
@@ -209,34 +211,30 @@ void loop() {
     sendEllapseMs = 0;
     }
   */
-
-  if (isRegular()) {
-    choosePattern();
-  }  else {
-    choosePattern();
-  }
-
-
+  
+  checkPatternTimer();
+  
   // send message to other jacket after pattern duration
   if (false == sentAlready) {
     //if (ellapseTimeMs[MY_PATTERN_ID] > durationMs / 4) { // sending halfway through
-    if (ellapseTimeMs[MY_PATTERN_ID] > 0) { // sending halfway through
+    if (ellapseTimeMs[myPatternId] > 0) { // sending halfway through
       Serial.print("sending::");
       Serial.print(" my-pattern-id:");
-      Serial.print(MY_PATTERN_ID);
-      Serial1.print((char)ledHue[MY_PATTERN_ID]); // sending color to IMU jackets
+      Serial.print(myPatternId);
+      Serial1.print((char)ledHue[myPatternId]); // sending color to IMU jackets
       Serial.print(" cmd:");
-      Serial.println(patternCommand[MY_PATTERN_ID]);
-      Serial1.print(patternCommand[MY_PATTERN_ID]);
+      Serial.println(patternCommand[myPatternId]);
+      Serial1.print(patternCommand[myPatternId]);
       sentAlready = true;
-      String msg = (String)patternCommand[MY_PATTERN_ID];
+      String msg = (String)patternCommand[myPatternId];
       mesh.sendBroadcast(msg);
     }
   }
 
+  
   for (int i = 0; i < (sizeof(patterns)) / 4; i++) {
     for (int j = 0; j < NUM_LEDS; j ++) {
-
+    // check timers for all patterns
       if (ellapseTimeMs[i] > durationMs ) {
         //led[i][j] = CHSV(100,100,100);
         led[i][j] = 0; // turn all LED to black once time hits
@@ -246,13 +244,12 @@ void loop() {
         // set color to be the incoming message color
         int color = inboundHue;
         // if own pattern, then lookup color array
-        if (i == MY_PATTERN_ID) {
+        if (i == myPatternId) {
           color = ledHue[i];
         }
         led[0][j] = patterns[i]->paintLed (position, remaining, led[0][j], color);
         //Serial.println(ledHue[i]);
       }
-
     }
   }
 
@@ -262,12 +259,13 @@ void loop() {
   // painless mesh
   mesh.update();
   digitalWrite(LED, !onFlag);
-
-
 }
 
 
 void show() {
+
+  // jacket 1 and 2 have different mappings for their led strips
+  // jacket 1 is mirrored, jacket 2 is mirrored
   int half_leds = (NUM_LEDS / 2);
 
   switch (WHOSE_HARDWARE) {
@@ -294,24 +292,32 @@ void show() {
   return;
 }
 
-void choosePattern() {
-
+void checkPatternTimer() {
+  // sets the timers for my pattern,  when timer goes to 0
+  // set the ellapseTimeMs to 0, which triggers 
+  // all actions
+  
+  myPatternId = choosePattern();
   float repeatMs = repeatDurationMs;
 
-  if (isCrazy() ) {
-    repeatMs = repeatCrazyMs;
-  }
-
   // autofire over repeat duration
-  if (ellapseTimeMs[MY_PATTERN_ID] > repeatMs) {
-    ellapseTimeMs[MY_PATTERN_ID] = 0;
+  if (ellapseTimeMs[myPatternId] > repeatMs) {
+    // pattern fires when ellapseTimeMs of the pattern is 0
+    ellapseTimeMs[myPatternId] = 0;
     durationMs = regularDuration;
     sentAlready = false;
   }
-
   return;
 }
 
+int choosePattern(){
+  int swA = digitalRead(pins[0]);
+  int swB = digitalRead(pins[1]);
+  if (swA == 0 && swB == 0) return 0;
+  if (swA == 0 && swB == 1) return 1;
+  if (swA == 1 && swB == 0) return 2;
+  if (swA == 1 && swB == 1) return 3;
+}
 
 void fadeall() {
   for (int i = 0; i < NUM_LEDS; i++) {
@@ -331,7 +337,7 @@ boolean isCrazy() {
 }
 
 void receiveMeshMsg(char inChar) {
-  
+
   Serial.println(inChar);
   //Serial.println(sizeof(patternCommand));
   Serial.println(sizeof(patterns) / 4);
