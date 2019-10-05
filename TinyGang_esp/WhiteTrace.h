@@ -11,8 +11,6 @@ class WhiteTrace : public Pattern {
       if (abs(remaining - position) < .20)
         return CHSV(primaryHue, 255, 255);
         //return CHSV(220, 200, 128); // pink
-
-
       //fade
       return previous.nscale8(192);
 
