@@ -59,7 +59,7 @@ Pattern* patterns[] = {
 
 int inboundHue = 229; // incoming char sets color
 
-int ledHue[] = { 0, 20, 255, 120, 229, 200};
+int ledHue[] = { 0, 20, 255, 229, 229, 200};
 // 120 was cyan
 // 229 pink
 // 22 orange
@@ -73,7 +73,7 @@ float regularDuration = 2000;
 float fastDuration = 2000;
 float durationMs = regularDuration;
 
-float repeatDurationMs = 5000;
+float repeatDurationMs = 7000;
 float repeatCrazyMs = 3000;
 boolean sentAlready = false; // send message boolean
 
