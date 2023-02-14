@@ -69,11 +69,11 @@ int ledHue[] = { 0, 20, 255, 229, 229, 200};
 elapsedMillis ellapseTimeMs[(sizeof(patterns)) / 4];
 
 float crazyDuration = 5000;
-float regularDuration = 2000;
+float regularDuration = 5000;
 float fastDuration = 2000;
 float durationMs = regularDuration;
 
-float repeatDurationMs = 7000;
+float repeatDurationMs = 17000;
 float repeatCrazyMs = 3000;
 boolean sentAlready = false; // send message boolean
 
